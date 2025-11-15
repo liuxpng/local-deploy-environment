@@ -1,0 +1,117 @@
+# ============================================
+# Gitea Actions Workflow 示例
+# ============================================
+# 此示例展示如何使用 Gitea Actions 构建 Docker 镜像并推送到 Gitea Container Registry
+#
+# 使用方法：
+# 1. 在你的仓库中创建 .gitea/workflows/ 目录
+# 2. 将此文件复制到该目录（可重命名，如 build.yml）
+# 3. 修改环境变量和镜像名称
+# 4. 推送代码到 Gitea 触发 workflow
+
+name: Build and Push Docker Image
+
+# 触发条件
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+
+# 环境变量
+env:
+  # 镜像仓库地址（使用 Gitea 域名）
+  REGISTRY: git.localhost:3000
+  # 镜像名称（格式: owner/repo）
+  IMAGE_NAME: ${{ gitea.repository }}
+
+jobs:
+  # ------------------------------------------
+  # 任务1: 构建和推送 Docker 镜像
+  # ------------------------------------------
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    # 使用支持 Docker 的容器镜像
+    container:
+      image: catthehacker/ubuntu:act-latest
+
+    steps:
+      # 步骤1: 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 步骤2: 设置 Docker Buildx（支持多平台构建）
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          # 配置 Buildx 允许 HTTP registry（仅测试环境）
+          config-inline: |
+            [registry."git.localhost:3000"]
+              http = true
+              insecure = true
+
+      # 步骤3: 登录到 Gitea Container Registry
+      - name: Login to Gitea Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          # 使用仓库 secrets 中的凭据
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      # 步骤4: 提取镜像元数据（标签、版本等）
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # 分支名称作为标签
+            type=ref,event=branch
+            # Tag 名称作为标签
+            type=ref,event=tag
+            # PR 号作为标签
+            type=ref,event=pr
+            # latest 标签（仅 main 分支）
+            type=raw,value=latest,enable=${{ gitea.ref == 'refs/heads/main' }}
+
+      # 步骤5: 构建并推送 Docker 镜像
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          # 使用 metadata action 生成的标签
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # 可选：多平台构建
+          # platforms: linux/amd64,linux/arm64
+          # 缓存配置（加速构建）
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+
+  # ------------------------------------------
+  # 任务2: 运行测试（可选）
+  # ------------------------------------------
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: catthehacker/ubuntu:act-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          # 在这里添加你的测试命令
+          # 例如: npm test, pytest, go test 等
+          echo "Tests passed!"

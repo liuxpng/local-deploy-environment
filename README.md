@@ -35,6 +35,23 @@ local-deploy-environment/
 ├── docker-compose.yml            # Docker Compose 编排文件
 ├── README.md                     # 项目文档
 │
+├── doc/                          # 文档目录
+│   ├── QUICKSTART.md            # 快速开始指南
+│   ├── CICD_GUIDE.md            # CI/CD 完整指南
+│   ├── QUICKSTART_CICD.md       # CI/CD 快速开始
+│   ├── SECRETS_GUIDE.md         # Secrets 配置指南
+│   ├── TEST_ACTIONS_MANUAL.md   # Actions 手动测试指南
+│   ├── STRUCTURE.md             # 详细结构说明
+│   ├── UPDATE_PASSWORD.md       # 密码更新指南
+│   └── examples/
+│       └── workflow-build-and-push.yml  # Workflow 示例
+│
+├── scripts/                      # 脚本目录
+│   ├── start.sh                 # 启动脚本
+│   ├── create-test-repo.sh      # 创建测试仓库
+│   ├── push-test-repo.sh        # 推送测试仓库
+│   └── test-actions.sh          # Actions 自动测试
+│
 ├── traefik/                      # Traefik 配置
 │   ├── Dockerfile
 │   ├── traefik.yml              # 静态配置
@@ -46,6 +63,9 @@ local-deploy-environment/
 │   └── config/
 │       └── app.ini              # 应用配置
 │
+├── act_runner/                   # Gitea Actions Runner 配置
+│   └── Dockerfile
+│
 ├── postgres/                     # PostgreSQL 配置
 │   ├── Dockerfile
 │   └── init.sql                 # 数据库初始化脚本
@@ -55,7 +75,8 @@ local-deploy-environment/
     │   ├── acme.json           # SSL 证书
     │   └── logs/               # 访问日志
     ├── gitea/                   # Gitea 数据
-    └── postgres/                # 数据库数据
+    ├── postgres/                # 数据库数据
+    └── act-runner/              # Runner 数据
 ```
 
 ## ⚙️ 快速开始
@@ -294,8 +315,25 @@ docker-compose up -d --build
 docker image prune -a
 ```
 
-## 📚 相关文档
+## 📚 文档索引
 
+### 快速开始
+- [QUICKSTART.md](doc/QUICKSTART.md) - 平台快速开始指南
+- [QUICKSTART_CICD.md](doc/QUICKSTART_CICD.md) - CI/CD 功能快速开始
+
+### 完整指南
+- [CICD_GUIDE.md](doc/CICD_GUIDE.md) - CI/CD 完整使用指南
+- [SECRETS_GUIDE.md](doc/SECRETS_GUIDE.md) - Secrets 配置详细指南
+- [TEST_ACTIONS_MANUAL.md](doc/TEST_ACTIONS_MANUAL.md) - Gitea Actions 手动测试指南
+- [UPDATE_PASSWORD.md](doc/UPDATE_PASSWORD.md) - 密码更新指南
+
+### 项目信息
+- [STRUCTURE.md](doc/STRUCTURE.md) - 详细项目结构说明
+
+### 示例文件
+- [workflow-build-and-push.yml](doc/examples/workflow-build-and-push.yml) - 完整的 Docker 镜像构建和推送 workflow 示例
+
+### 官方文档
 - [Gitea 官方文档](https://docs.gitea.io/)
 - [Traefik 官方文档](https://doc.traefik.io/traefik/)
 - [PostgreSQL 官方文档](https://www.postgresql.org/docs/)

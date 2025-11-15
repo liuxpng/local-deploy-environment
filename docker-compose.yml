@@ -15,6 +15,7 @@ volumes:
   gitea-data:
   postgres-data:
   traefik-certs:
+  act-runner-data:
 
 # ============================================
 # 服务配置
@@ -121,6 +122,14 @@ services:
       - GITEA__server__ROOT_URL=http://${GITEA_DOMAIN:-git.localhost}/
       - GITEA__server__HTTP_PORT=${GITEA_HTTP_PORT:-3000}
       - GITEA__server__SSH_PORT=${GITEA_SSH_PORT:-2222}
+      # 启用内置 SSH 服务器
+      - GITEA__server__START_SSH_SERVER=true
+      - GITEA__server__SSH_LISTEN_PORT=22
+      # 启用 Gitea Actions (CI/CD)
+      - GITEA__actions__ENABLED=${GITEA_ACTIONS_ENABLED:-true}
+      - GITEA__actions__DEFAULT_ACTIONS_URL=https://github.com
+      # 启用 Packages (容器镜像仓库)
+      - GITEA__packages__ENABLED=${GITEA_PACKAGES_ENABLED:-true}
       - TZ=${TZ:-Asia/Shanghai}
     volumes:
       - gitea-data:/data
@@ -142,3 +151,35 @@ services:
       # - "traefik.http.routers.gitea-secure.tls=true"
       # - "traefik.http.routers.gitea-secure.tls.certresolver=letsencrypt"
       # - "traefik.http.routers.gitea-secure.service=gitea"
+
+  # ------------------------------------------
+  # Act Runner (Gitea Actions Runner)
+  # ------------------------------------------
+  act_runner:
+    build:
+      context: ./act_runner
+      dockerfile: Dockerfile
+    container_name: act_runner
+    restart: unless-stopped
+    networks:
+      - gitea-network
+    depends_on:
+      gitea:
+        condition: service_started
+    environment:
+      # Gitea 实例 URL（容器内部访问）
+      - GITEA_INSTANCE_URL=http://gitea:3000
+      # Runner 注册令牌（需要从 Gitea UI 生成后填入 .env 文件）
+      - GITEA_RUNNER_REGISTRATION_TOKEN=${GITEA_RUNNER_REGISTRATION_TOKEN}
+      # Runner 名称
+      - GITEA_RUNNER_NAME=${GITEA_RUNNER_NAME:-default-runner}
+      # Runner 标签（定义可用的执行环境）
+      - GITEA_RUNNER_LABELS=${GITEA_RUNNER_LABELS:-ubuntu-latest:docker://catthehacker/ubuntu:act-latest}
+      - TZ=${TZ:-Asia/Shanghai}
+    volumes:
+      # 数据持久化
+      - act-runner-data:/data
+      # 挂载 Docker socket（用于在 runner 中构建 Docker 镜像）
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.enable=false"
