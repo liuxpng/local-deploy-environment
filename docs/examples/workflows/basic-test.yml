@@ -1,0 +1,92 @@
+# 基础测试 Workflow
+# 用途: 演示 Gitea Actions 的基本功能和语法
+
+name: Basic Test
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  hello-world:
+    name: Hello World
+    runs-on: ubuntu-latest
+    container:
+      image: catthehacker/ubuntu:act-latest
+
+    steps:
+      - name: 打印欢迎信息
+        run: |
+          echo "==========================================="
+          echo "🎉 欢迎使用 Gitea Actions!"
+          echo "==========================================="
+          echo ""
+          echo "📦 仓库信息:"
+          echo "  仓库: ${{ gitea.repository }}"
+          echo "  分支: ${{ gitea.ref_name }}"
+          echo "  提交: ${{ gitea.sha }}"
+          echo "  事件: ${{ gitea.event_name }}"
+          echo ""
+          echo "==========================================="
+
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 显示系统信息
+        run: |
+          echo "系统信息:"
+          uname -a
+          echo ""
+          echo "当前用户: $(whoami)"
+          echo "当前目录: $(pwd)"
+          echo ""
+          echo "文件列表:"
+          ls -lah
+
+  test-commands:
+    name: Test Commands
+    runs-on: ubuntu-latest
+    container:
+      image: catthehacker/ubuntu:act-latest
+
+    steps:
+      - name: 测试基本命令
+        run: |
+          echo "测试常用工具..."
+          echo ""
+
+          # Git
+          echo "✅ Git: $(git --version)"
+
+          # Bash
+          echo "✅ Bash: $BASH_VERSION"
+
+          # 其他工具
+          echo "✅ Curl: $(curl --version | head -1)"
+          echo "✅ Wget: $(wget --version | head -1)"
+
+      - name: 测试环境变量
+        run: |
+          echo "Gitea 环境变量:"
+          env | grep GITEA || echo "无 Gitea 特定环境变量"
+
+      - name: 测试多行脚本
+        run: |
+          echo "测试循环..."
+          for i in {1..5}; do
+            echo "  第 $i 次循环"
+          done
+          echo "✅ 循环测试完成"
+
+      - name: 测试条件判断
+        run: |
+          if [ -d "/home" ]; then
+            echo "✅ /home 目录存在"
+          else
+            echo "❌ /home 目录不存在"
+          fi

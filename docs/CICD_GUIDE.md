@@ -176,7 +176,7 @@ jobs:
 
 ### 示例：构建 Docker 镜像
 
-参考 [examples/workflow-build-and-push.yml](examples/workflow-build-and-push.yml)
+参考 [examples/workflows/build-and-push.yml](examples/workflows/build-and-push.yml)
 
 **关键步骤**：
 
@@ -432,5 +432,7 @@ sudo systemctl restart docker
 
 - [.env](.env) - 环境变量配置
 - [docker-compose.yml](docker-compose.yml) - 服务编排
-- [examples/workflow-build-and-push.yml](examples/workflow-build-and-push.yml) - Workflow 示例
+- [examples/workflows/](examples/workflows/) - Workflow 示例集合
+  - [basic-test.yml](examples/workflows/basic-test.yml) - 基础测试示例
+  - [build-and-push.yml](examples/workflows/build-and-push.yml) - Docker 镜像构建和推送
 - [README.md](README.md) - 项目主文档

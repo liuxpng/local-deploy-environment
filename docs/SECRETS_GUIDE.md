@@ -280,51 +280,6 @@ PROD_DATABASE_URL
 
 ---
 
-## 常见问题
-
-### Q1: Secret 的值在哪里可以看到？
-
-**A**: 出于安全考虑，一旦添加 Secret，就无法再查看其值。只能：
-- 更新（替换为新值）
-- 删除
-
-### Q2: Workflow 中使用 Secret 失败，显示为空？
-
-**检查清单**：
-
-1. ✅ Secret 名称是否正确（区分大小写）
-   ```yaml
-   # ❌ 错误
-   ${{ secrets.docker_token }}
-
-   # ✅ 正确
-   ${{ secrets.DOCKER_TOKEN }}
-   ```
-
-2. ✅ Secret 是否已添加到仓库
-   - 仓库 Settings → Secrets 中检查
-
-3. ✅ Secret 是否在正确的作用域
-   - 组织 Secret 需要仓库有访问权限
-
-### Q3: 如何更新已有的 Secret？
-
-1. 仓库 Settings → Secrets
-2. 找到要更新的 Secret
-3. 点击 **Edit** 或 **Update**
-4. 输入新值
-5. 保存
-
-### Q4: 可以在 pull request 中使用 Secrets 吗？
-
-**A**: 默认情况下：
-- ✅ 来自同一仓库的 PR 可以使用 Secrets
-- ⚠️ 来自 fork 的 PR **不能**使用 Secrets（安全限制）
-
-如果需要在 fork PR 中使用，需要仓库维护者手动触发。
-
----
-
 ## 快速检查清单
 
 使用 Secrets 前，确保：
@@ -341,5 +296,5 @@ PROD_DATABASE_URL
 ## 相关资源
 
 - [CICD_GUIDE.md](CICD_GUIDE.md) - CI/CD 完整使用指南
-- [TEST_ACTIONS_MANUAL.md](TEST_ACTIONS_MANUAL.md) - Actions 手动测试指南
-- [examples/workflow-build-and-push.yml](examples/workflow-build-and-push.yml) - 完整 workflow 示例
+- [FAQ.md](FAQ.md) - Secrets 相关常见问题
+- [examples/workflows/build-and-push.yml](examples/workflows/build-and-push.yml) - 完整 workflow 示例

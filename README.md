@@ -36,15 +36,17 @@ local-deploy-environment/
 ├── README.md                     # 项目文档
 │
 ├── doc/                          # 文档目录
+│   ├── README.md                # 文档导航索引
 │   ├── QUICKSTART.md            # 快速开始指南
 │   ├── CICD_GUIDE.md            # CI/CD 完整指南
-│   ├── QUICKSTART_CICD.md       # CI/CD 快速开始
 │   ├── SECRETS_GUIDE.md         # Secrets 配置指南
-│   ├── TEST_ACTIONS_MANUAL.md   # Actions 手动测试指南
-│   ├── STRUCTURE.md             # 详细结构说明
-│   ├── UPDATE_PASSWORD.md       # 密码更新指南
+│   ├── STRUCTURE.md             # 项目结构说明
+│   ├── FAQ.md                   # 常见问题解答
+│   ├── TROUBLESHOOTING.md       # 故障排查指南
 │   └── examples/
-│       └── workflow-build-and-push.yml  # Workflow 示例
+│       └── workflows/           # Workflow 示例集合
+│           ├── basic-test.yml   # 基础测试
+│           └── build-and-push.yml  # 镜像构建推送
 │
 ├── scripts/                      # 脚本目录
 │   ├── start.sh                 # 启动脚本
@@ -317,21 +319,24 @@ docker image prune -a
 
 ## 📚 文档索引
 
+> **💡 提示**: 查看 [doc/README.md](doc/README.md) 了解完整文档导航和学习路径
+
 ### 快速开始
-- [QUICKSTART.md](doc/QUICKSTART.md) - 平台快速开始指南
-- [QUICKSTART_CICD.md](doc/QUICKSTART_CICD.md) - CI/CD 功能快速开始
+- **[QUICKSTART.md](doc/QUICKSTART.md)** - 15分钟快速部署指南
 
-### 完整指南
-- [CICD_GUIDE.md](doc/CICD_GUIDE.md) - CI/CD 完整使用指南
-- [SECRETS_GUIDE.md](doc/SECRETS_GUIDE.md) - Secrets 配置详细指南
-- [TEST_ACTIONS_MANUAL.md](doc/TEST_ACTIONS_MANUAL.md) - Gitea Actions 手动测试指南
-- [UPDATE_PASSWORD.md](doc/UPDATE_PASSWORD.md) - 密码更新指南
+### 功能指南
+- **[CICD_GUIDE.md](doc/CICD_GUIDE.md)** - CI/CD 完整使用指南
+- **[SECRETS_GUIDE.md](doc/SECRETS_GUIDE.md)** - Secrets 安全配置指南
+- **[STRUCTURE.md](doc/STRUCTURE.md)** - 项目结构详解
 
-### 项目信息
-- [STRUCTURE.md](doc/STRUCTURE.md) - 详细项目结构说明
+### 帮助文档
+- **[FAQ.md](doc/FAQ.md)** - 常见问题快速解答
+- **[TROUBLESHOOTING.md](doc/TROUBLESHOOTING.md)** - 系统性故障排查指南
 
 ### 示例文件
-- [workflow-build-and-push.yml](doc/examples/workflow-build-and-push.yml) - 完整的 Docker 镜像构建和推送 workflow 示例
+- **[examples/workflows/](doc/examples/workflows/)** - Workflow 示例集合
+  - [basic-test.yml](doc/examples/workflows/basic-test.yml) - 基础测试
+  - [build-and-push.yml](doc/examples/workflows/build-and-push.yml) - Docker 镜像构建推送
 
 ### 官方文档
 - [Gitea 官方文档](https://docs.gitea.io/)
