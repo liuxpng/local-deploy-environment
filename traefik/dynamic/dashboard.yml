@@ -1,0 +1,30 @@
+# ============================================
+# Traefik Dashboard 动态配置
+# ============================================
+
+http:
+  # 路由配置
+  routers:
+    dashboard:
+      rule: "Host(`traefik.localhost`)"  # 修改为实际的域名
+      service: "api@internal"
+      entryPoints:
+        - web
+      # 如果启用 HTTPS，使用以下配置
+      # entryPoints:
+      #   - websecure
+      # tls:
+      #   certResolver: letsencrypt
+      middlewares:
+        - auth
+
+  # 中间件配置
+  middlewares:
+    # 基本认证中间件
+    auth:
+      basicAuth:
+        users:
+          # 用户名: admin, 密码: changeme
+          # 使用 htpasswd 生成: echo $(htpasswd -nb admin changeme)
+          # 或在线生成: https://hostingcanada.org/htpasswd-generator/
+          - "admin:$apr1$8jKW4YaI$BKsGBVQw5VGxJQJQcQmVY0"

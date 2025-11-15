@@ -1,0 +1,76 @@
+# ============================================
+# Traefik 静态配置
+# ============================================
+
+# API 和 Dashboard 配置
+api:
+  dashboard: true
+  insecure: false  # 通过 Traefik 路由访问，而非直接端口
+
+# Ping 配置（用于健康检查）
+ping:
+  entryPoint: "ping"
+
+# 入口点配置
+entryPoints:
+  # Ping 入口（健康检查）
+  ping:
+    address: ":8080"
+
+  # HTTP 入口
+  web:
+    address: ":80"
+    # HTTP 自动重定向到 HTTPS（如果不需要 HTTPS，注释掉下面的 http.redirections 部分）
+    # http:
+    #   redirections:
+    #     entryPoint:
+    #       to: websecure
+    #       scheme: https
+
+  # HTTPS 入口
+  websecure:
+    address: ":443"
+    # HTTP/3 支持（可选）
+    # http3: {}
+
+# 服务提供者配置
+providers:
+  # Docker 提供者 - 自动发现容器
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false  # 只暴露明确标记的容器
+    network: "gitea-network"  # 使用指定的 Docker 网络
+    watch: true  # 监听 Docker 事件
+
+  # 文件提供者 - 加载动态配置
+  file:
+    directory: "/etc/traefik/dynamic"
+    watch: true
+
+# 证书解析器配置（Let's Encrypt）
+# 如果不需要 HTTPS，可以注释掉整个 certificatesResolvers 部分
+# certificatesResolvers:
+#   letsencrypt:
+#     acme:
+#       email: "${ACME_EMAIL}"
+#       storage: "/letsencrypt/acme.json"
+#       # 使用 HTTP-01 挑战
+#       httpChallenge:
+#         entryPoint: web
+#       # 或使用 TLS-01 挑战
+#       # tlsChallenge: {}
+
+# 日志配置
+log:
+  level: INFO
+  # level: DEBUG  # 调试时使用
+
+# 访问日志
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  bufferingSize: 100
+
+# 全局配置
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
