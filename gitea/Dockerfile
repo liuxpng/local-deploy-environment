@@ -1,5 +1,5 @@
 # Gitea Dockerfile
-FROM gitea/gitea:1.21-rootless
+FROM gitea/gitea:latest
 
 # 设置时区
 ENV TZ=Asia/Shanghai

@@ -1,5 +1,5 @@
 # PostgreSQL Dockerfile
-FROM postgres:15.15-alpine3.21
+FROM postgres:15-alpine
 
 # 设置时区
 ENV TZ=Asia/Shanghai

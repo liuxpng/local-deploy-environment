@@ -124,7 +124,7 @@ services:
       - GITEA__server__SSH_PORT=${GITEA_SSH_PORT:-2222}
       # 启用内置 SSH 服务器
       - GITEA__server__START_SSH_SERVER=true
-      - GITEA__server__SSH_LISTEN_PORT=22
+      - GITEA__server__SSH_LISTEN_PORT=${GITEA_SSH_PORT:-2222}
       # 启用 Gitea Actions (CI/CD)
       - GITEA__actions__ENABLED=${GITEA_ACTIONS_ENABLED:-true}
       - GITEA__actions__DEFAULT_ACTIONS_URL=https://github.com
@@ -137,7 +137,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     ports:
       # SSH 端口暴露到宿主机
-      - "${GITEA_SSH_PORT:-2222}:22"
+      - "${GITEA_SSH_PORT:-2222}:2222"
     labels:
       - "traefik.enable=true"
       # HTTP 路由

@@ -1,5 +1,5 @@
 # Traefik Dockerfile
-FROM traefik:v3.0
+FROM traefik:latest
 
 # 创建日志目录
 RUN mkdir -p /var/log/traefik
